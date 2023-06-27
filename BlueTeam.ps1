@@ -4,8 +4,6 @@ param (
 [ValidateNotNullOrEmpty()]$File
 )
 
-#Import-Module ImportExcel
-
 Try {
 $CurrentPath = (Get-Location).Path
 $Sheet = Import-Csv -Path $File
