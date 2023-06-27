@@ -12,6 +12,7 @@ $OUs = (Get-Content $File | Select-Object -First 1).Split(",")
 Import-Module ActiveDirectory
 Set-Location AD:
 $ADRoot = (Get-ADDomain).DistinguishedName
+$DomainSID = (Get-ADDomain).DomainSID.Value
 
 $Safe_Users = "Domain Admins|Enterprise Admins|BUILTIN\\Administrators|NT AUTHORITY\\SYSTEM|$env:userdomain\\CERT Publishers|$env:userdomain\\Administrator|BUILTIN\\Account Operators|BUILTIN\\Terminal Server License Servers|NT AUTHORITY\\SELF|NT AUTHORITY\\ENTERPRISE DOMAIN CONTROLLERS|$env:userdomain\\Enterprise Read-only Domain Controllers|CREATOR OWNER|$env:userdomain\\DNSAdmins|$env:userdomain\\Key Admins|$env:userdomain\\Enterprise Key Admins|$env:userdomain\\Domain Computers|$env:userdomain\\Domain Controllers|$env:userdomain\\<Azure AD Connect service account>|$env:userdomain\\BackupDC*|$env:userdomain\\TestDC|$DomainSID-519|S-1-5-32-548|$env:userdomain\\<Azure AD Cloud Sync gMSA>"
 $DangerousRights = "GenericAll|WriteDACL|WriteOwner|GenericWrite|WriteProperty|Self"
