@@ -28,12 +28,6 @@ While($SafeGroups.Substring($SafeGroups.Length-1) -eq "|"){$SafeGroups = $SafeGr
 
 $ADCS_Objects = (Get-ADObject -Filter * -SearchBase "$OU_DN").DistinguishedName
 
-Write-Host " "
-Write-Host "Checking $OU_DN"
-Write-Host " "
-Write-Host "Checking $ADCS_Objects"
-Write-Host " "
-
 ForEach ($object in $ADCS_Objects)
 {
 $BadACE = (Get-Acl $object -ErrorAction SilentlyContinue).Access | Where-Object {(($_.IdentityReference -notmatch $Safe_Users) -and ($_.IdentityReference -notmatch $SafeGroups)) -and (($_.ActiveDirectoryRights -match $DangerousRights) -or ((($_.ActiveDirectoryRights -like "*ExtendedRight*") -and (($_.ObjectType -match $DangerousGUIDs) -or ($_.ObjectType -match $FishyGUIDs))))) -and ($_.AccessControlType -eq "Allow")}
