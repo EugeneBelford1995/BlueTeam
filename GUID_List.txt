@@ -1,6 +1,6 @@
 --- WriteProperty GUIDs matched to attributes ---
 
-f30e3bbe-9ff0-11d1-b603-0000f80367c	gPLink
+f30e3bbe-9ff0-11d1-b603-0000f80367c1	gPLink
 bf9679c0-0de6-11d0-a285-00aa003049e2	Member
 bc0ac240-79a9-11d0-9020-00c04fc2d4cf	Membership
 bf9679a8-0de6-11d0-a285-00aa003049e2	ScriptPath
