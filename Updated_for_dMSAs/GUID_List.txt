@@ -1,0 +1,24 @@
+--- WriteProperty GUIDs matched to attributes ---
+
+f30e3bbe-9ff0-11d1-b603-0000f80367c	gPLink
+bf9679c0-0de6-11d0-a285-00aa003049e2	Member
+bc0ac240-79a9-11d0-9020-00c04fc2d4cf	Membership
+bf9679a8-0de6-11d0-a285-00aa003049e2	ScriptPath
+
+--- ExtendedRight GUIDs matched to right ---
+
+00299570-246d-11d0-a768-00aa006e0529	ResetPassword
+1131f6aa-9c07-11d1-f79f-00c04fc2dcd2	DS-Replication-Get-Changes
+1131f6ad-9c07-11d1-f79f-00c04fc2dcd2	DS-Replication-Get-Changes-All
+
+--- Self GUIDs matched to right ---
+
+bf9679c0-0de6-11d0-a285-00aa003049e2	self-membership
+
+--- InheritedObjectType GUIDs matched to what they apply to ---
+
+bf967aa5-0de6-11d0-a285-00aa003049e2	Organizational Units
+bf967a86-0de6-11d0-a285-00aa003049e2	Computer
+bf967aba-0de6-11d0-a285-00aa003049e2	User
+bf967a9c-0de6-11d0-a285-00aa003049e2	Groups
+5cb41ed0-0e4c-11d0-a286-00aa003049e2	Contacts
