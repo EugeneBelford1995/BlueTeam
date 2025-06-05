@@ -114,14 +114,18 @@ Set-Location AD:
 $ADRoot = (Get-ADDomain).DistinguishedName
 
 $Safe_Users = "Domain Admins|Enterprise Admins|BUILTIN\\Administrators|NT AUTHORITY\\SYSTEM|$env:userdomain\\CERT Publishers|$env:userdomain\\Administrator|BUILTIN\\Account Operators|BUILTIN\\Terminal Server License Servers|NT AUTHORITY\\SELF|NT AUTHORITY\\ENTERPRISE DOMAIN CONTROLLERS|$env:userdomain\\Enterprise Read-only Domain Controllers|CREATOR OWNER|$env:userdomain\\DNSAdmins|$env:userdomain\\Key Admins|$env:userdomain\\Enterprise Key Admins|$env:userdomain\\Domain Computers|$env:userdomain\\Domain Controllers|$env:userdomain\\MSOL_06b14f1f684c|$env:userdomain\\BackupDC*|$env:userdomain\\TestDC|$DomainSID-519|S-1-5-32-548|$env:userdomain\\pGMSA_1b6a601e*"
-$Safe_OU_Users = "$env:userdomain\\Domain Admins|Enterprise Admins|BUILTIN\\Administrators|NT AUTHORITY\\SYSTEM|$env:userdomain\\Administrator|$env:userdomain\\Organization Management|$env:userdomain\\Exchange Trusted Subsystem|$env:userdomain\\Exchange Windows Permissions"
+$Safe_OU_Users = "$env:userdomain\\Domain Admins|Enterprise Admins|BUILTIN\\Administrators|NT AUTHORITY\\SYSTEM|$env:userdomain\\Administrator|$env:userdomain\\Organization Management|$env:userdomain\\Exchange Trusted Subsystem|$env:userdomain\\Exchange Windows Permissions|$env:userdomain\\Domain Controllers|NT AUTHORITY\\ENTERPRISE DOMAIN CONTROLLERS|$env:userdomain\\Domain Controllers|$env:userdomain\\Key Admins|$env:userdomain\\Enterprise Key Admins|$env:userdomain\\Group Policy Creator Owners|$env:userdomain\\RAS and IAS Servers|$env:userdomain\\DnsAdmins"
 $DangerousOURights = "GenericAll|WriteDACL|WriteOwner"
 $DangerousRights = "GenericAll|WriteDACL|WriteOwner|GenericWrite|WriteProperty|Self"
 $DangerousGUIDs = "1131f6aa-9c07-11d1-f79f-00c04fc2dcd2|1131f6ad-9c07-11d1-f79f-00c04fc2dcd2|00000000-0000-0000-0000-000000000000|00299570-246d-11d0-a768-00aa006e0529|33f04103-32fa-405f-95f8-037dd0a79827"
 $FishyGUIDs = "ab721a56-1e2f-11d0-9819-00aa0040529b|ab721a54-1e2f-11d0-9819-00aa0040529b"
 $SafeOUInheritance = "Descendents"
 
-$OUs = (Get-ADOrganizationalUnit -Filter * -SearchBase $ADRoot).DistinguishedName
+#Only checks OUs
+#$OUs = (Get-ADOrganizationalUnit -Filter * -SearchBase $ADRoot).DistinguishedName
+
+#Checks OUs and containers
+$OUs = (Get-ADObject -Filter {ObjectClass -eq "organizationalUnit" -or ObjectClass -eq "container"} -Properties *).DistinguishedName
 ForEach($OU in $OUs)
 {
 $BadACE = (Get-Acl "$OU").Access | Where-Object {($_.ActiveDirectoryRights -match $DangerousOURights) -or (($_.ActiveDirectoryRights -like "*CreateChild*") -and (($_.ObjectType -eq "00000000-0000-0000-0000-000000000000") -or ($_.ObjectType -eq "33f04103-32fa-405f-95f8-037dd0a79827"))) -and ($_.IdentityReference -notmatch $Safe_OU_Users) -and ($_.InheritanceType -notmatch $SafeOUInheritance) -and ($_.AccessControlType -eq "Allow")}
@@ -130,5 +134,12 @@ If ($BadACE)
 Write-Host "Object: $OU" -ForegroundColor Red 
 $BadACE
 }
+}
+
+$ReallyBadACE = (Get-Acl "$ADRoot").Access | Where-Object {($_.ActiveDirectoryRights -match $DangerousOURights) -or (($_.ActiveDirectoryRights -like "*CreateChild*") -and (($_.ObjectType -eq "00000000-0000-0000-0000-000000000000") -or ($_.ObjectType -eq "33f04103-32fa-405f-95f8-037dd0a79827"))) -and ($_.IdentityReference -notmatch $Safe_OU_Users) -and ($_.InheritanceType -notmatch $SafeOUInheritance) -and ($_.AccessControlType -eq "Allow")}
+If ($ReallyBadACE)
+{
+Write-Host "Object: Domain Root" -ForegroundColor Red 
+$ReallyBadACE
 }
 }
